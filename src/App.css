@@ -1,0 +1,12 @@
+.icon>div{
+  border-top-right-radius: 100px;
+  border-bottom-right-radius: 100px;
+}
+
+.left-s{
+  z-index: 100;
+}
+.dial-pad{
+  position: relative;
+  z-index: 1;
+}

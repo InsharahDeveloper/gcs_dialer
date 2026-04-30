@@ -2,28 +2,26 @@ import { useNavigate, useMatch } from "react-router-dom";
 import { motion } from "framer-motion";
 import { SIDEBAR_CONFIG } from "../config/sidebarConfig";
 
-// useMatch hooks — must be at top level, not inside loops/conditions
-const useSidebarMatch = () => {
+const SlidingSidebar = () => {
+  const navigate = useNavigate();
+
+  // ALL useMatch hooks at top level inside the component — not in custom hook outside
   const callsMatch = useMatch("/calls/*");
   const msgsMatch  = useMatch("/messages/*");
   const contsMatch = useMatch("/contacts/*");
 
-  if (callsMatch) return SIDEBAR_CONFIG.find((s) => s.match === "/calls");
-  if (msgsMatch)  return SIDEBAR_CONFIG.find((s) => s.match === "/messages");
-  if (contsMatch) return SIDEBAR_CONFIG.find((s) => s.match === "/contacts");
-  return null;
-};
-
-const SlidingSidebar = () => {
-  const navigate = useNavigate();
-
-  const activeConfig = useSidebarMatch();
-
-  // useMatch for active item highlight
   const callDetailMatch = useMatch("/calls/:id");
   const msgDetailMatch  = useMatch("/messages/:id");
   const contDetailMatch = useMatch("/contacts/:id");
 
+  // Find active section
+  const activeConfig =
+    callsMatch ? SIDEBAR_CONFIG.find((s) => s.match === "/calls")    :
+    msgsMatch  ? SIDEBAR_CONFIG.find((s) => s.match === "/messages") :
+    contsMatch ? SIDEBAR_CONFIG.find((s) => s.match === "/contacts") :
+    null;
+
+  // Find active item id
   const activeId =
     callDetailMatch?.params?.id ||
     msgDetailMatch?.params?.id  ||
@@ -59,9 +57,7 @@ const SlidingSidebar = () => {
           <p className="text-zinc-500 text-sm p-2">No items found.</p>
         ) : (
           activeConfig.items.map((item, index) => {
-            // Compare item.id (number or string) with activeId (string from params)
             const isActive = String(item.id) === String(activeId);
-
             return (
               <motion.div
                 key={item.id}
